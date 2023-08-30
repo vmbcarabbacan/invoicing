@@ -42,6 +42,7 @@ import { onBeforeRouteLeave } from 'vue-router';
 import { useMiscStore } from '@/store/misc'
 import { storeToRefs } from "pinia"
 import { useRoute, useRouter } from 'vue-router'
+import { setKey } from '@/store/composables/common'
 
 const miscs = useMiscStore()
 const route = useRoute()
@@ -61,8 +62,9 @@ function goBack() {
 async function handleSave() {
     let isAdd = false
     if(route.name?.toString().includes('Add')) isAdd = true
-    if(route.meta.withId) misc.value.category = route.params.id.toString()
-    await useSaveItem(misc.value, route.name, isAdd)
+    const key = setKey(<string> route.name)
+    if(route.meta.withId) misc.value[key] = route.params.id.toString()
+    await useSaveItem(misc.value, <string> route.name, isAdd)
     goBack()
 }
 </script>

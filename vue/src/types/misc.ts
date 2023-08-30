@@ -19,3 +19,7 @@ export interface TABLEHEADER {
     sortable: boolean,
     key: string
 }
+
+export interface KEYOFSTRING {
+    [key: string]: string
+}

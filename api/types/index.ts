@@ -16,7 +16,8 @@ export type Bearer = {
 
 export type Queries = {
     name: Fitlers,
-    category: string
+    category?: string
+    variable?: string
 }
 
 export type Fitlers = {

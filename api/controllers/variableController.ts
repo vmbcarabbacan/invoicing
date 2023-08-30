@@ -69,6 +69,7 @@ export const getVariableOptions = async(req: Request, res: Response) => {
     const { per_page, indexStart } = await pages(req)
 
     let query = <Queries>{}
+    query.variable = req.body.variable ?? req.query.variable
 
     if(req.query.qn) query.name = <Fitlers>{ $regex: req.query.qn, $options: 'i' }
 

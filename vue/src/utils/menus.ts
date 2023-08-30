@@ -32,6 +32,30 @@ const menus = [
                 show: true
             },
             {
+                path: 'variables',
+                name: 'Variables',
+                label: 'Variables',
+                component: () => import('@/views/Product/Misc/index.vue'),
+                icon: '',
+                show: true,
+                meta: {
+                    withSub: true
+                }
+            },
+            {
+                path: 'variables/option/:id',
+                name: 'SubVariables',
+                label: '',
+                component: () => import('@/views/Product/Misc/index.vue'),
+                icon: '',
+                show: false,
+                meta: {
+                    withBack: true,
+                    withPayload: true,
+                    to: 'Variables'
+                }
+            },
+            {
                 path: 'categories',
                 name: 'Categories',
                 label: 'Categories',
@@ -105,8 +129,26 @@ const menus = [
                 show: false
             },
             {
+                path: 'variables/:id',
+                name: 'EditVariables',
+                label: '',
+                component: () => import('@/views/Product/Misc/Add.vue'),
+                props: true,
+                icon: '',
+                show: false
+            },
+            {
                 path: 'categories/sub/edit/:id',
                 name: 'EditSubCategories',
+                label: '',
+                component: () => import('@/views/Product/Misc/Add.vue'),
+                props: true,
+                icon: '',
+                show: false
+            },
+            {
+                path: 'variables/option/edit/:id',
+                name: 'EditSubVariables',
                 label: '',
                 component: () => import('@/views/Product/Misc/Add.vue'),
                 props: true,
@@ -141,6 +183,15 @@ const menus = [
                 show: false
             },
             {
+                path: 'variables/add',
+                name: 'AddVariables',
+                label: '',
+                component: () => import('@/views/Product/Misc/Add.vue'),
+                props: true,
+                icon: '',
+                show: false
+            },
+            {
                 path: 'categories/add',
                 name: 'AddCategories',
                 label: '',
@@ -152,6 +203,18 @@ const menus = [
             {
                 path: 'categories/sub/add/:id',
                 name: 'AddSubCategories',
+                label: '',
+                component: () => import('@/views/Product/Misc/Add.vue'),
+                props: true,
+                icon: '',
+                show: false,
+                meta: {
+                    withId: true
+                }
+            },
+            {
+                path: 'variables/option/add/:id',
+                name: 'AddSubVariables',
                 label: '',
                 component: () => import('@/views/Product/Misc/Add.vue'),
                 props: true,

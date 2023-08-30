@@ -1,16 +1,12 @@
 import { defineStore } from "pinia"
 import axios from 'axios'
 import { capitalizeWords } from '@/store/composables/common'
-import { MISC, value } from "@/types/"
-
-interface keyOfString {
-    [key: string]: string
-}
+import { MISC, value, KEYOFSTRING } from "@/types/"
 
 export const useMiscStore = defineStore('misc', {
     state: () => ({
        miscs: <MISC> {},
-       misc: <value> {}
+       misc: <KEYOFSTRING> {}
     }),
     getters: {
         miscDatas: (state) => {
@@ -26,7 +22,7 @@ export const useMiscStore = defineStore('misc', {
         }
     },
     actions: {
-        async getRecords(link: string, payload: keyOfString) {
+        async getRecords(link: string, payload: KEYOFSTRING) {
             try {
                 const tp = window.localStorage.getItem('tp')
                 axios.defaults.headers.common['Authorization'] = `Bearer ${tp}`;
@@ -42,7 +38,7 @@ export const useMiscStore = defineStore('misc', {
             }
         },
 
-        async getRecord(link: string, payload: Record<string, undefined>) {
+        async getRecord(link: string, payload: KEYOFSTRING) {
             try {
                 const tp = window.localStorage.getItem('tp')
                 axios.defaults.headers.common['Authorization'] = `Bearer ${tp}`;
@@ -60,7 +56,7 @@ export const useMiscStore = defineStore('misc', {
             }
         },
 
-        async saveRecord(link: string, payload: Record<string, undefined>, isAdd: Boolean = true) {
+        async saveRecord(link: string, payload: KEYOFSTRING, isAdd: Boolean = true) {
             try {
                 const tp = window.localStorage.getItem('tp')
                 axios.defaults.headers.common['Authorization'] = `Bearer ${tp}`;

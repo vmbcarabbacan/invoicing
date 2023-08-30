@@ -3,14 +3,8 @@ import { useRoute } from "vue-router"
 import { useMiscStore } from '@/store/misc'
 import { useAppStore } from '@/store/app'
 import { storeToRefs } from "pinia"
-import { setTitle, setUrl } from "./common"
-import { NONAME } from "dns"
-
-
-
-interface keyOfString {
-    [key: string]: string
-}
+import { setTitle, setUrl, setKey } from "./common"
+import { MISC, value, KEYOFSTRING } from "@/types/"
 
 export function useComponent() {
     const route = useRoute()
@@ -35,8 +29,8 @@ export function useComponent() {
         app.setPageTitle(title.value)
         search.value = ''
 
-        const key = route.meta.withPayload && (route.name == 'SubCategories') ? 'category' : ''
-        let payload = {}
+        const key = route.meta.withPayload ?  setKey(<string> route.name) : ''
+        let payload = {} as KEYOFSTRING
         if(route.meta.withPayload)
         payload[key] = route.params.id.toString()
         
@@ -51,7 +45,7 @@ export function useComponent() {
     }
 }
 
-export function useEditComponent(payload: Record<string, undefined> = {}) {
+export function useEditComponent(payload: KEYOFSTRING = {}) {
     const route = useRoute()
     const app = useAppStore()
     const misc = useMiscStore()
@@ -77,7 +71,7 @@ export function useEditComponent(payload: Record<string, undefined> = {}) {
     }
 }
 
-export async function useSaveItem (payload: Record<string, undefined>, routeName: string, isAdd: Boolean = true) {
+export async function useSaveItem (payload: KEYOFSTRING, routeName: string, isAdd: Boolean = true) {
     
     const misc = useMiscStore()
     try {

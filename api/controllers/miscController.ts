@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { Category, ICategory } from '../models/categories'
 import { SubCategory, ISubCategory } from '../models/subCategories'
 import { Brand, IBrand } from '../models/brands'
+import { Attribute, IAttribute } from '../models/attributes'
 import { Tag, ITag } from '../models/tags'
 import { isEmpty, bodyWithId, pages, paginatedData, updateName } from '../services/'
 import { Queries, Fitlers } from '../types'
@@ -70,6 +71,29 @@ export const getTag = async(req: Request, res: Response) => {
         if(!req.params.id) res.status(400).json({ message: 'Id is required' })
 
         const exist = await Tag.findById(req.params.id)
+        if(!exist) return res.status(400).json({ message: 'Not found' })
+
+        res.status(200).json({ data: exist })
+    } catch (error) {
+        res.status(400).json({ error })
+    }
+}
+
+export const getAttributes = async(req: Request, res: Response) => {
+    const { per_page, indexStart } = await pages(req)
+
+    let query = <Queries>{}
+
+    if(req.query.qn) query.name = <Fitlers>{ $regex: req.query.qn, $options: 'i' }
+
+    paginatedData(res, Attribute, query, per_page, indexStart)
+}
+
+export const getAttribute = async(req: Request, res: Response) => {
+    try {
+        if(!req.params.id) res.status(400).json({ message: 'Id is required' })
+
+        const exist = await Attribute.findById(req.params.id)
         if(!exist) return res.status(400).json({ message: 'Not found' })
 
         res.status(200).json({ data: exist })
@@ -201,6 +225,39 @@ export const updateTag = async(req: Request, res: Response) => {
     }
 }
 
+export const createAttribute = async(req: Request, res: Response) => {
+    try {
+        const { name } = req.body
+        if(await isEmpty(Object.values(req.body))) return res.status(400).json({message: 'Name must not be empty'})
+        
+        const attributeObj = <IAttribute>{
+            name: name.toLowerCase()
+        }
+
+        const exist = await Attribute.find(attributeObj)
+        if(exist.length > 0) return res.status(400).json({ message: 'Name was already taken' })
+
+        const attribute = await Attribute.create(attributeObj)
+        res.status(200).json({data: attribute})
+    } catch (error) {
+        res.status(400).json({error})
+    }
+}
+
+export const updateAttribute = async(req: Request, res: Response) => {
+    try {
+        const { name, id } = req.body
+
+        if(await isEmpty(Object.values(req.body))) return res.status(400).json({message: 'Name must not be empty'})
+        const fields = {
+            name: name.toLowerCase()
+        }
+        await updateName(res, Attribute, id, fields)
+    } catch (error) {
+        res.status(400).json({error})
+    }
+}
+
 export const createSubCategory = async(req: Request, res: Response) => {
     try {
         const { name, category } = req.body
@@ -247,6 +304,10 @@ let misc = {
     getBrand,
     updateBrand,
     createBrand,
+    getAttributes,
+    getAttribute,
+    updateAttribute,
+    createAttribute,
     getTags,
     getTag,
     updateTag,
