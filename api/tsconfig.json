@@ -1,0 +1,12 @@
+{
+    // other settings..
+    "compilerOptions": {
+      // other compiler options...
+        "target": "es6",
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "moduleResolution": "Node"
+    },
+    "include": ["/**/*.ts"],
+    "exclude": ["node_modules"]
+  }

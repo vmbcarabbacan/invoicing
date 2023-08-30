@@ -1,0 +1,6 @@
+.env
+node_modules
+
+# node -e "console.log(require('crypto').randomBytes(32).toString('hex'));" // create secret key https://github.com/dwyl/learn-json-web-tokens
+# node
+# require('crypto').randomBytes(64).toString('hex')
