@@ -5,9 +5,9 @@
                 <div>
                     <v-btn
                         v-if="route.meta.withBack"
-                        variant="flat"
-                        color="indigo-darken-3"
-                        prepend-icon="mdi-plus"
+                        prepend-icon="mdi-arrow-left"
+                        size="small"
+                        variant="text"
                         @click="goBack(route.meta?.to?.toString())"
                     >
                         Back

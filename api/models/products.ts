@@ -1,10 +1,11 @@
-import { Schema, Types, model } from 'mongoose'
-import { types } from '../utils/constant'
+import { Schema, Types, model, Document, Query } from 'mongoose'
+import { types, productStatuses } from '../utils/constant'
 import { DefaultTypes } from '../types/'
 import { Category } from './categories'
 import { SubCategory } from './subCategories'
 import { Brand } from './brands'
 import { Tag } from './tags'
+import { Attribute } from './attributes'
 
 export interface IProduct extends Document {
     name: string,
@@ -14,15 +15,23 @@ export interface IProduct extends Document {
     track_quantity: boolean,
     continue_out_of_stock: boolean,
     type: number,
-    category: Types.ObjectId,
-    sub_category: Types.ObjectId,
-    brand: Types.ObjectId,
-    tags: Array<Types.ObjectId>,
-    _doc: any
+    category?: Types.ObjectId,
+    sub_category?: Types.ObjectId,
+    brand?: Types.ObjectId,
+    tags?: Array<Types.ObjectId>,
+    attributes?: Array<Types.ObjectId>,
+    status: number,
+    _doc?: any
+}
+
+export interface ProductQueryHelpers {
+    [x: string]: any;
+    byName(name: string, user_id: string): Query<any, Document<IProduct>> & ProductQueryHelpers;
 }
 
 const productTypes = types.map((x: DefaultTypes) => x.value)
-const productSchema = new Schema(
+const statuses = productStatuses.map((x: DefaultTypes) => x.value)
+export const productSchema = new Schema(
     {
         name: {
             type: String,
@@ -62,26 +71,34 @@ const productSchema = new Schema(
         category: {
             type: Types.ObjectId,
             ref: Category,
-            required: [true, 'Category is required']
         },
         sub_category: {
             type: Types.ObjectId,
             ref: SubCategory,
-            required: [true, 'Sub category is required']
         },
         brand: {
             type: Types.ObjectId,
             ref: Brand,
-            required: [true, 'Brand is required']
         },
         tags: {
             type: Array<Types.ObjectId>,
-            ref: Tag,
-            required: [true, 'Brand is required']
+            ref: Tag
+        },
+        attributes: {
+            type: Array<Types.ObjectId>,
+            ref: Attribute
         },
         image: {
             type: String,
             required: false
+        },
+        status: {
+            type: Number,
+            enum: statuses,
+            required: false,
+            validate(val: number) {
+                if (!statuses.includes(val)) throw new Error(`Product status is not supported`);
+            },
         }
     },
     {
@@ -90,5 +107,11 @@ const productSchema = new Schema(
     }
 )
 
-export const Product = model<IProduct>('Products', productSchema)
+productSchema.query = {
+    async byName(name: string) {
+       return await this.where({ name })
+     }
+}
+
+export const Product = model<IProduct, ProductQueryHelpers>('Product', productSchema)
 

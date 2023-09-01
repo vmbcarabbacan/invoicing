@@ -1,9 +1,6 @@
 const links = {
-    // post request
     signin: '/auth',
     register: '/auth/register',
-
-    // get request
     refresh: '/auth/refresh',
     logout: '/auth/logout',
     categories: '/misc/categories',
@@ -27,6 +24,7 @@ const links = {
     brandPost: '/misc/brand',
     attributePost: '/misc/attribute',
     tagsPost: '/misc/tag',
+    saveProduct: '/product',
 }
 
 export default links

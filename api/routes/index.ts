@@ -3,6 +3,7 @@ import auth from "./auth"
 import master from './master'
 import misc from './misc'
 import variable from './variable'
+import product from './product'
 
 const routes = [
     {
@@ -20,6 +21,10 @@ const routes = [
     {
         location: '/variable',
         dir: variable
+    },
+    {
+        location: '/product',
+        dir: product
     },
     // {
     //     location: '*',

@@ -27,7 +27,7 @@ const menus = [
                 path: 'product-new',
                 name: 'NewProduct',
                 label: 'Add New',
-                component: () => import('@/views/Product/AllProducts.vue'),
+                component: () => import('@/views/Product/Add.vue'),
                 icon: '',
                 show: true
             },

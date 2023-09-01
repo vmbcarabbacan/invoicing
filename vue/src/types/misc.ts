@@ -21,5 +21,5 @@ export interface TABLEHEADER {
 }
 
 export interface KEYOFSTRING {
-    [key: string]: string
+    [key: string]: string | boolean | number | Array<string> | null
 }
