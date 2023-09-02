@@ -9,7 +9,6 @@ import { MISC, value, KEYOFSTRING } from "@/types/"
 export function useComponent() {
     const route = useRoute()
     const component = reactive({
-        url: '',
         page: 1,
         qn: '',
         per_page: 10
@@ -22,7 +21,7 @@ export function useComponent() {
 
     watchEffect(async() => {
         title.value =  setTitle(<string> route.name)
-        component.url = setUrl(<string> route.name)
+        const url = setUrl(<string> route.name)
         component.page = parseInt(<string> route.query.page) || 1
         component.qn = <string> route.query.qn || ''
         component.per_page = parseInt(<string> route.query.per_page) || 10
@@ -33,9 +32,13 @@ export function useComponent() {
         let payload = {} as KEYOFSTRING
         if(route.meta.withPayload)
         payload[key] = route.params.id.toString()
+
+        Object.entries(component).forEach(([key, value]) => {
+            if(value) payload[key] = value
+        })
         
-        if(component.url && !component.url.includes('ID') && route) {
-            await misc.getRecords(`${component.url}?page=${component.page}&per_page=${component.per_page}&qn=${component.qn}`, payload)
+        if(url && !url.includes('ID') && route) {
+            await misc.getRecords(url, payload)
         }
 
     })
@@ -57,7 +60,7 @@ export function useEditComponent(payload: KEYOFSTRING = {}) {
     const title = ref('')
     watchEffect(async() => {
         title.value =  setTitle(<string> route.name)
-        component.id = route.params.id
+        component.id = route.params.id.toString()
         component.url = setUrl(<string> route.name).replace('ID', component.id)
         app.setPageTitle(title.value)
 

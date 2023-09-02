@@ -70,13 +70,12 @@
 <script lang="ts" setup>
 import { ref, computed, defineAsyncComponent } from 'vue'
 import LoadingComponent  from '@/components/Loading.vue'
-import { useProductStore } from '@/store/product'
-import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
+import { useProduct, useSaveProduct } from '@/store/composables/product'
+import { useRoute, useRouter } from 'vue-router'
 
-const prod = useProductStore()
+
+const route = useRoute()
 const router = useRouter()
-const { product } = storeToRefs(prod)
 const step = ref<number>(1)
 
 const currentTitle = computed(() => {
@@ -87,6 +86,8 @@ const currentTitle = computed(() => {
     }
 })
 
+useProduct()
+
 const ProductTitle = defineAsyncComponent({
     loader: () => import('@/components/Forms/Product/Title.vue'),
     loadingComponent: LoadingComponent,
@@ -96,8 +97,7 @@ const ProductTitle = defineAsyncComponent({
 
 async function saveProduct() {
   step.value++
-  const response = await prod.saveProduct(product.value)
-  
-  router.replace({ query: {pid: response.id} })
+  const { id } = await useSaveProduct(<string> route.query.pid)
+  router.replace({ query: { pid: id } })
 }
 </script>

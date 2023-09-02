@@ -24,7 +24,8 @@ const links = {
     brandPost: '/misc/brand',
     attributePost: '/misc/attribute',
     tagsPost: '/misc/tag',
-    saveProduct: '/product',
+    product: '/product',
+    productById: '/product/ID',
 }
 
 export default links

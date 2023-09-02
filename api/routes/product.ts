@@ -8,5 +8,8 @@ router.use(verifyJWT)
 
 router.route('/').get(product.getProducts)
                 .post(product.createProduct)
+                .patch(product.createProduct)
+
+router.route('/:id').get(product.getProduct)
 
 export default router

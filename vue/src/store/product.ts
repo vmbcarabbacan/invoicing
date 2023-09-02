@@ -32,9 +32,9 @@ export const useProductStore = defineStore('product', {
 
                 let response = {} as any
 
-                if(payload.id) response = await axios.patch(links.saveProduct, payload)
+                if(payload.id) response = await axios.patch(links.product, payload)
 
-                response = await axios.post(links.saveProduct, payload)
+                response = await axios.post(links.product, payload)
 
                 const product = response.data.data
                 product.id = product._id
@@ -46,6 +46,21 @@ export const useProductStore = defineStore('product', {
             } catch (error) {
                 return error
             }
+        },
+
+        async getProduct(link: string) {
+            const tp = window.localStorage.getItem('tp')
+            axios.defaults.headers.common['Authorization'] = `Bearer ${tp}`;
+
+            const response: any = await axios.get(link)
+            console.log({response})
+            const data = await response.data.data
+            const id = data._id
+            delete data.deleted_at
+            delete data._id
+
+            this.product = { ... data, id}
+            return response
         }
     }
 })

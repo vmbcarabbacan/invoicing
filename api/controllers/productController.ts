@@ -13,6 +13,19 @@ export const getProducts = async(req: Request, res: Response) => {
     paginatedData(res, Product, query, per_page, indexStart)
 }
 
+export const getProduct = async(req: Request, res: Response) => {
+    try {
+        if(!req.params.id) res.status(400).json({ message: 'Id is required' })
+
+        const exist = await Product.findById(req.params.id)
+        if(!exist) return res.status(400).json({ message: 'Not found' })
+
+        res.status(200).json({ data: exist })
+    } catch (error) {
+        res.status(400).json({ error })
+    }
+}
+
 export const createProduct = async(req: Request, res: Response) => {
     try {
         const { name, id } = req.body
@@ -22,9 +35,11 @@ export const createProduct = async(req: Request, res: Response) => {
         }
         if(await isEmpty(Object.values(productObj))) return res.status(400).json({message: 'Name must not be empty'})
         
-        const exist = await Product.find(productObj)
-        if(exist.length > 0) return res.status(400).json({ message: 'Name was already taken' })
-
+        if(!id) {
+            const exist = await Product.find(productObj)
+            if(exist.length > 0) return res.status(400).json({ message: 'Name was already taken' })
+        }
+    
         Object.entries(req.body).forEach(([key, value]) => {
             productObj[key] = value
         })
@@ -36,8 +51,6 @@ export const createProduct = async(req: Request, res: Response) => {
         if(!productObj.sub_category) delete productObj.sub_category
         if(!productObj.id) delete productObj.id
 
-        console.log('start')
-        console.log({productObj})
         if(id) {
             const exist = await Product.findById(id)
             if(!exist) res.status(400).json({ message: 'Product not found' })
@@ -61,6 +74,7 @@ export const createProduct = async(req: Request, res: Response) => {
 
 let product = {
     getProducts,
+    getProduct,
     createProduct
 }
 
