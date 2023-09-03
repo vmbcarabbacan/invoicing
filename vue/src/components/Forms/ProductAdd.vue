@@ -12,36 +12,8 @@
         
         <ProductTitle />
   
-        <v-window-item :value="2">
-          <v-card-text>
-            <v-text-field
-              label="Password"
-              type="password"
-            ></v-text-field>
-            <v-text-field
-              label="Confirm Password"
-              type="password"
-            ></v-text-field>
-            <span class="text-caption text-grey-darken-1">
-              Please enter a password for your account
-            </span>
-          </v-card-text>
-        </v-window-item>
+        <ProductInventory />
   
-        <v-window-item :value="3">
-          <div class="pa-4 text-center">
-            <v-img
-              class="mb-4"
-              contain
-              height="128"
-              src="https://cdn.vuetifyjs.com/images/logos/v.svg"
-            ></v-img>
-            <h3 class="text-h6 font-weight-light mb-2">
-              Welcome to Vuetify
-            </h3>
-            <span class="text-caption text-grey">Thanks for signing up!</span>
-          </div>
-        </v-window-item>
       </v-window>
   
       <v-divider></v-divider>
@@ -81,7 +53,7 @@ const step = ref<number>(1)
 const currentTitle = computed(() => {
     switch(step.value) {
         case 1: return 'Add New Product'
-        case 2: return 'Create a password'
+        case 2: return 'Inventory'
         default: return 'Account created'
     }
 })
@@ -90,6 +62,13 @@ useProduct()
 
 const ProductTitle = defineAsyncComponent({
     loader: () => import('@/components/Forms/Product/Title.vue'),
+    loadingComponent: LoadingComponent,
+    delay: 1000,
+    timeout: 3000
+})
+
+const ProductInventory= defineAsyncComponent({
+    loader: () => import('@/components/Forms/Product/Inventory.vue'),
     loadingComponent: LoadingComponent,
     delay: 1000,
     timeout: 3000

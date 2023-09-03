@@ -24,3 +24,7 @@ export type Fitlers = {
     $regex: string,
     $options: string
 }
+
+export type DefData = {
+    [key: string]: string | boolean | number | Array<string> | null | unknown
+}

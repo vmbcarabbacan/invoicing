@@ -83,6 +83,10 @@ const containUndefined = (arr: Array<string>) => {
     return value.replace(" ", "-")
   }
 
+  const randomString = () => {
+    return Math.random().toString(36).substring(2,16);
+  }
+
   const pages = async (req: Request) => {
     const page = req.query.page ? parseInt(req.query.page) : 1
     let per_page = 1
@@ -131,5 +135,6 @@ const containUndefined = (arr: Array<string>) => {
     pages,
     paginatedData,
     updateName,
-    addSlug
+    addSlug,
+    randomString
   }
