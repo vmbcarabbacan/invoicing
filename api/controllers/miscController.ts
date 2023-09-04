@@ -14,6 +14,7 @@ export const getCategories = async(req: Request, res: Response) => {
     let query = <Queries>{}
 
     if(req.query.qn) query.name = <Fitlers>{ $regex: req.query.qn, $options: 'i' }
+    if(req.query.show_all) query.show_all = true
 
     paginatedData(res, Category, query, per_page, indexStart)
     
@@ -38,6 +39,7 @@ export const getBrands = async(req: Request, res: Response) => {
     let query = <Queries>{}
 
     if(req.query.qn) query.name = <Fitlers>{ $regex: req.query.qn, $options: 'i' }
+    if(req.query.show_all) query.show_all = true
 
     paginatedData(res, Brand, query, per_page, indexStart)
 
@@ -62,6 +64,7 @@ export const getTags = async(req: Request, res: Response) => {
     let query = <Queries>{}
 
     if(req.query.qn) query.name = <Fitlers>{ $regex: req.query.qn, $options: 'i' }
+    if(req.query.show_all) query.show_all = true
 
     paginatedData(res, Tag, query, per_page, indexStart)
 }
@@ -85,6 +88,7 @@ export const getAttributes = async(req: Request, res: Response) => {
     let query = <Queries>{}
 
     if(req.query.qn) query.name = <Fitlers>{ $regex: req.query.qn, $options: 'i' }
+    if(req.query.show_all) query.show_all = true
 
     paginatedData(res, Attribute, query, per_page, indexStart)
 }
@@ -109,6 +113,7 @@ export const getSubCategories = async(req: Request, res: Response) => {
     query.category = req.body.category ?? req.query.category 
 
     if(req.query.qn) query.name = <Fitlers>{ $regex: req.query.qn, $options: 'i' }
+    if(req.query.show_all) query.show_all = true
 
     paginatedData(res, SubCategory, query, per_page, indexStart, ['category'])
 

@@ -18,6 +18,7 @@ export type Queries = {
     name: Fitlers,
     category?: string
     variable?: string
+    show_all?: boolean
 }
 
 export type Fitlers = {

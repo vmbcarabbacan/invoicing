@@ -11,6 +11,7 @@ export const getVariables = async(req: Request, res: Response) => {
     let query = <Queries>{}
 
     if(req.query.qn) query.name = <Fitlers>{ $regex: req.query.qn, $options: 'i' }
+    if(req.query.show_all) query.show_all = true
 
     paginatedData(res, Variable, query, per_page, indexStart)
 
@@ -72,7 +73,8 @@ export const getVariableOptions = async(req: Request, res: Response) => {
     query.variable = req.body.variable ?? req.query.variable
 
     if(req.query.qn) query.name = <Fitlers>{ $regex: req.query.qn, $options: 'i' }
-
+    if(req.query.show_all) query.show_all = true
+    
     paginatedData(res, VariableOption, query, per_page, indexStart, ['variable'])
 
 }

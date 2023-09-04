@@ -97,7 +97,17 @@ const containUndefined = (arr: Array<string>) => {
   }
 
   const paginatedData = async(res: Response, Model: Collection & any, query: Queries, per_page: number, indexStart: number, populates: Array<string> = []) => {
+    let show_all = false
+    if(query.show_all) {
+      show_all = true
+      delete query.show_all
+    }
+    
     let result = Model.find(query)
+    if(show_all) {
+      const all = await result.exec()
+      return res.status(200).json({ data: all })
+    }
 
     if(populates.length > 0) for(const populate of populates) result.populate(populate)
 

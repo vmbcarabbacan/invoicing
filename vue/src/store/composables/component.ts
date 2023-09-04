@@ -4,7 +4,7 @@ import { useMiscStore } from '@/store/misc'
 import { useAppStore } from '@/store/app'
 import { storeToRefs } from "pinia"
 import { setTitle, setUrl, setKey } from "./common"
-import { MISC, value, KEYOFSTRING } from "@/types/"
+import { KEYOFSTRING } from "@/types/"
 
 export function useComponent() {
     const route = useRoute()
