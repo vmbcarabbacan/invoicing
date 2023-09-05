@@ -56,14 +56,15 @@
                                     multiple
                                 >
                                     <template v-slot:selection="{ item, index }">
-                                        <v-chip v-if="index < 2">
+                                        <v-chip v-if="index < 1">
                                             <span>{{ item.title }} </span>
                                         </v-chip>
                                         <span
-                                            v-if="index === 2"
+                                            v-if="index === 1"
                                             class="text-grey text-caption align-self-center"
                                         >
-                                            (+{{ value.length - 2 }} others)
+                                            
+                                            (+{{ variable.variable_option_id.length - 1 }} others)
                                         </span>
                                     </template>
                                 </v-select>
@@ -71,33 +72,55 @@
                         </v-row>
                     </v-container>
                 </div>
+                <v-btn
+                    color="primary"
+                    variant="flat"
+                    block
+                    @click="addVariable"
+                    :disabled="product.options.length == 2"
+                >
+                    Add New Option
+                </v-btn>
             </template>
           </v-card-text>
     </v-window-item>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '@/store/product'
-import { KEYOFSTRING } from '@/types';
 
 const prod = useProductStore()
 const { product, getVariables } = storeToRefs(prod)
 
+callVariable()
+
 function callVariable () {
     if(product.value.is_variable) {
         prod.getVaribales()
-        product.value.options = <any>[{
+        if(product.value.options && product.value.options.length === 0) {
+            product.value.options =[{
             variable_id: null,
             variable_option_id: [],
             variables: getVariables,
             options: []
         }]
+        }
+        
     }
 }
 
-async function handleChange(variable: KEYOFSTRING) {
-    const data = await prod.getVariableOptionByVariableId(<string> variable.variable_id)
+function addVariable () {
+    product.value.options.push({
+        variable_id: null,
+        variable_option_id: [],
+        variables: getVariables,
+        options: []
+    })
+}
+
+async function handleChange(variable) {
+    const data = await prod.getVariableOptionByVariableId(variable.variable_id)
     variable.options = data
 }
 </script>

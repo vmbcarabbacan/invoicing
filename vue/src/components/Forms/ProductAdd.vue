@@ -13,6 +13,8 @@
         <ProductTitle />
   
         <ProductInventory />
+
+        <ProductVariables />
   
       </v-window>
   
@@ -69,6 +71,13 @@ const ProductTitle = defineAsyncComponent({
 
 const ProductInventory= defineAsyncComponent({
     loader: () => import('@/components/Forms/Product/Inventory.vue'),
+    loadingComponent: LoadingComponent,
+    delay: 1000,
+    timeout: 3000
+})
+
+const ProductVariables= defineAsyncComponent({
+    loader: () => import('@/components/Forms/Product/Variables.vue'),
     loadingComponent: LoadingComponent,
     delay: 1000,
     timeout: 3000

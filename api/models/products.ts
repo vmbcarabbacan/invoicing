@@ -20,6 +20,7 @@ export interface IProduct extends Document {
     brand?: Types.ObjectId,
     tags?: Array<Types.ObjectId>,
     attributes?: Array<Types.ObjectId>,
+    options?: Array<string>,
     status: number,
     _doc?: any
 }
@@ -90,6 +91,10 @@ export const productSchema = new Schema(
         },
         image: {
             type: String,
+            required: false
+        },
+        options: {
+            type: Array<String>,
             required: false
         },
         status: {

@@ -21,7 +21,6 @@ export async function useSaveProduct(id: string) {
     form.loading = true
 
     product.value.id = id
-    
     const response = await prod.saveProduct(product.value)
     form.loading = false
 

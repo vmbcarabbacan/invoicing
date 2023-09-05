@@ -22,7 +22,8 @@ export const useProductStore = defineStore('product', {
             status: 0,
             options: []
         },
-        variables: []
+        variables: [],
+        options: []
     }),
     getters: {
         getVariables(state) {
@@ -32,6 +33,23 @@ export const useProductStore = defineStore('product', {
                     title: capitalizeWords(<string> x.name)
                 }
             })
+        },
+        generateVariables(state) {
+            const variables = state.product.options.map(opt => {
+                return opt.variable_option_id.map(var_opt => {
+                    return {
+                        variation_id: opt.variable_id,
+                        variation_option_id: var_opt,
+                        variation_name: opt.variables.find(x => x.value === opt.variable_id).title,
+                        variation_option_name: opt.options.find(x => x.value === var_opt).title
+                    }
+                })
+            })
+
+            const options = generateVariable(variables.length, variables, state.product.id)
+
+            this.options = options
+            return options
         }
     },
     actions: {
@@ -49,7 +67,6 @@ export const useProductStore = defineStore('product', {
                 const product = response.data.data
                 product.id = product._id
                 delete product._id
-                product.options = []
 
                 this.product = product
                 return product
@@ -67,7 +84,7 @@ export const useProductStore = defineStore('product', {
             const id = data._id
             delete data.deleted_at
             delete data._id
-            data.options = []
+
             this.product = { ...data, id}
             return response
         },
@@ -104,3 +121,42 @@ export const useProductStore = defineStore('product', {
         }
     }
 })
+
+function generateVariable(count, sections, product_id) {
+    const results = []
+    switch (count) {
+        case 1:
+          for (var i = 0; i < sections[0].length; i++) {
+            results.push({
+              name: sections[0][i]["variation_option_name"],
+              product_id,
+              skus: null,
+              price: 0,
+              quantity: 0,
+              images: [],
+              description: null
+            })
+          }
+          break
+        case 2:
+          for (var i = 0; i < sections[0].length; i++) {
+            for (var j = 0; j < sections[1].length; j++) {
+              results.push({
+                name:
+                  sections[0][i]["variation_option_name"] +
+                  " / " +
+                  sections[1][j]["variation_option_name"],
+                  product_id,
+                  skus: null,
+                  price: 0,
+                  quantity: 0,
+                  images: [],
+                  description: null
+              })
+            }
+          }
+          break
+    }
+
+    return results
+}
