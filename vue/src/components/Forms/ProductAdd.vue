@@ -30,7 +30,7 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
-          v-if="step < 3"
+          v-if="step < 4"
           color="primary"
           variant="flat"
           @click="saveProduct"
@@ -46,8 +46,11 @@ import { ref, computed, defineAsyncComponent } from 'vue'
 import LoadingComponent  from '@/components/Loading.vue'
 import { useProduct, useSaveProduct } from '@/store/composables/product'
 import { useRoute, useRouter } from 'vue-router'
+import { useProductStore } from '@/store/product'
+import { storeToRefs } from 'pinia'
 
-
+const prod = useProductStore()
+const { product, options } = storeToRefs(prod)
 const route = useRoute()
 const router = useRouter()
 const step = ref<number>(1)
@@ -56,6 +59,7 @@ const currentTitle = computed(() => {
     switch(step.value) {
         case 1: return 'Add New Product'
         case 2: return 'Inventory'
+        case 3: return 'Manage Variables'
         default: return 'Account created'
     }
 })
@@ -85,6 +89,10 @@ const ProductVariables= defineAsyncComponent({
 
 async function saveProduct() {
   step.value++
+  console.log(step.value)
+  console.log(product.value.is_variable)
+  if(step.value == 3 && product.value.is_variable) product.value.variable_options = options
+
   const { id } = await useSaveProduct(<string> route.query.pid)
   router.replace({ query: { pid: id } })
 }

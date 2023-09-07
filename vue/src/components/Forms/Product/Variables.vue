@@ -2,7 +2,7 @@
     <v-window-item :value="3">
         <v-expansion-panels variant="accordion">
             <v-expansion-panel
-                v-for="(variable, index) in options"
+                v-for="(variable, index) in product.skus"
                 :key="index"
             >
             <v-expansion-panel-title> {{ variable.name }} </v-expansion-panel-title>
@@ -34,6 +34,6 @@ import { storeToRefs } from 'pinia'
 import { useProductStore } from '@/store/product'
 
 const prod = useProductStore()
-const { options } = storeToRefs(prod)
+const { product } = storeToRefs(prod)
 
 </script>

@@ -4,6 +4,7 @@ import { ProductSku, IProductSku } from '../models/productSkus'
 import { Queries, Fitlers, DefData } from '../types'
 import { isEmpty, bodyWithId, pages, paginatedData, randomString, addSlug } from '../services/'
 import mongoose from 'mongoose'
+import { ProductSkueValue } from '../models/productSkuValues'
 
 export const getProducts = async(req: Request, res: Response) => {
     const { per_page, indexStart } = await pages(req)
@@ -66,22 +67,54 @@ export const createProduct = async(req: Request, res: Response) => {
 
             const product = await Product.findById(id)
             
+            /**
+             * updating the sku options
+             */
             for(const i in skus) {
                 const skuData = <DefData> createSkuData({
                     name: skus[i].name ?? `${product.name}-${randomString()}`,
                     product_id: product._id,
-                    sku: skus[i].sku ?? null,
+                    sku: skus[i].sku ?? randomString(),
                     price: skus[i].price ?? 0,
                     quantity: skus[i].quantity ?? 0
                 })
                 skuData['id'] = skus[i]._id
-                const variable_sku = await createSku(skuData, 'update')
-                
-                // if(is_variable) {
-                // // add sku values
-                // }
-                
+                await createSku(skuData)
             }
+
+            /**
+             * function will be enable once variable options
+             * is present from the payload and is variable
+             * is set to true
+             * 
+             * will save new sku options and values
+             */
+            if(req.body.variable_options && req.body.variable_options.length > 0 && is_variable) {
+                for(const j in req.body.variable_options) {
+                    const skuData = <DefData> createSkuData({
+                        name: `${product.name}-${req.body.variable_options[j].name}` ?? `${product.name}-${randomString()}`,
+                        product_id: product._id,
+                        sku: req.body.variable_options[j].sku ?? randomString(),
+                        price: req.body.variable_options[j].price ?? 0,
+                        quantity: req.body.variable_options[j].quantity ?? 0
+                    })
+                    const variable_sku_exist = await checkSkuExist(skuData)
+                    console.log(variable_sku_exist)
+                    if(!variable_sku_exist) {
+                        const variable_sku = await createSku(skuData)
+                        for(const k in req.body.variable_options[j].skus) {
+                            const sku_value = <DefData>{
+                                product_id: product._id,
+                                product_sku_id: variable_sku,
+                                variation_id: req.body.variable_options[j].skus[k].variation_id,
+                                variation_option_id: req.body.variable_options[j].skus[k].variation_option_id
+                            }
+                            await createSkuValues(sku_value)
+                        }
+                    }
+                }
+            }
+
             const prod = await getProductQuery(product._id, product.is_variable, true)
             return res.status(200).json({ data: prod })
         }
@@ -91,7 +124,7 @@ export const createProduct = async(req: Request, res: Response) => {
             name: product.name,
             product_id: product._id
         })
-        await createSku(skuData, 'save')
+        await createSku(skuData)
 
         const prod = await getProductQuery(product._id, product.is_variable, true)
 
@@ -101,7 +134,11 @@ export const createProduct = async(req: Request, res: Response) => {
     }
 }
 
-const createSku = async(data: DefData, status: string = '') => {
+const checkSkuExist = async(data: DefData) => {
+    return ProductSku.findOne({ product_id: data.product_id, name: data.name }).exec()
+}
+
+const createSku = async(data: DefData) => {
     if(data.id) {
         const id = data.id
         delete data.id
@@ -109,11 +146,12 @@ const createSku = async(data: DefData, status: string = '') => {
 
         return await ProductSku.findById(id)
     }
+
     return await ProductSku.create(data)
 }
 
-const createSkuValues = async($product_id: string, $variation_id: string, $variation_option_id: string, $product_sku_id: string,) => {
-    
+const createSkuValues = async(sku_value: DefData) => {
+    await ProductSkueValue.create(sku_value)
 }
 
 const createSkuData = (data: DefData) => {
@@ -123,7 +161,6 @@ const createSkuData = (data: DefData) => {
     structure['sku'] = data.sku ?? randomString()
     structure['price'] = data.price ?? 0
     structure['quantity'] = data.quantity ?? 0
-
     return structure
 }
 

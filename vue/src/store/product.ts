@@ -20,7 +20,8 @@ export const useProductStore = defineStore('product', {
             tags: [],
             attributes: [],
             status: 0,
-            options: []
+            options: [],
+            variable_options: []
         },
         variables: [],
         options: []
@@ -129,8 +130,8 @@ function generateVariable(count, sections, product_id) {
           for (var i = 0; i < sections[0].length; i++) {
             results.push({
               name: sections[0][i]["variation_option_name"],
+              skus: [sections[0][i]],
               product_id,
-              skus: null,
               price: 0,
               quantity: 0,
               images: [],
@@ -146,8 +147,8 @@ function generateVariable(count, sections, product_id) {
                   sections[0][i]["variation_option_name"] +
                   " / " +
                   sections[1][j]["variation_option_name"],
+                  skus: [sections[0][i], sections[1][j]],
                   product_id,
-                  skus: null,
                   price: 0,
                   quantity: 0,
                   images: [],
