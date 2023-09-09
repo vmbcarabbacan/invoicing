@@ -15,6 +15,8 @@
         <ProductInventory />
 
         <ProductVariables />
+
+        <ProductAttributes />
   
       </v-window>
   
@@ -24,18 +26,19 @@
         <v-btn
           v-if="step > 1"
           variant="text"
-          @click="step--"
+          @click="goBack"
         >
           Back
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
-          v-if="step < 4"
+          v-if="step < 5"
           color="primary"
           variant="flat"
           @click="saveProduct"
+          :disabled="!product.name"
         >
-          Next
+          {{ step == 4 ? 'Complete' : 'Next' }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -60,7 +63,7 @@ const currentTitle = computed(() => {
         case 1: return 'Add New Product'
         case 2: return 'Inventory'
         case 3: return 'Manage Variables'
-        default: return 'Account created'
+        default: return 'Attributes'
     }
 })
 
@@ -87,13 +90,26 @@ const ProductVariables= defineAsyncComponent({
     timeout: 3000
 })
 
+const ProductAttributes = defineAsyncComponent({
+    loader: () => import('@/components/Forms/Product/Attributes.vue'),
+    loadingComponent: LoadingComponent,
+    delay: 1000,
+    timeout: 3000
+})
+
 async function saveProduct() {
   step.value++
-  console.log(step.value)
-  console.log(product.value.is_variable)
+  if(step.value == 3 && !product.value.is_variable) step.value++
   if(step.value == 3 && product.value.is_variable) product.value.variable_options = options
 
+  if(step.value === 5) product.value.status = 1
   const { id } = await useSaveProduct(<string> route.query.pid)
-  router.replace({ query: { pid: id } })
+  if(step.value === 5 ) return router.push({ name: 'AllProducts' })
+  else router.replace({ query: { pid: id } })
+}
+
+function goBack() {
+  step.value--
+  if(step.value === 3 && !product.value.is_variable) step.value--
 }
 </script>

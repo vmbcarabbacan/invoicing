@@ -89,13 +89,17 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '@/store/product'
+import { useSaveProduct } from '@/store/composables/product'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const prod = useProductStore()
 const { product, getVariables } = storeToRefs(prod)
 
 callVariable()
 
-function callVariable () {
+async function callVariable () {
+    await useSaveProduct(route.query.pid)
     if(product.value.is_variable) {
         prod.getVaribales()
         if(product.value.options && product.value.options.length === 0) {

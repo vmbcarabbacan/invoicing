@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import { KEYOFSTRING } from "@/types"
-import axios from "axios"
+import axios from "@/plugins/axios"
 import links from "@/utils/links"
 import { capitalizeWords } from '@/store/composables/common'
 
@@ -24,7 +24,12 @@ export const useProductStore = defineStore('product', {
             variable_options: []
         },
         variables: [],
-        options: []
+        options: [],
+        attributes: [],
+        categories: [],
+        subCategories: [],
+        tags: [],
+        brands: []
     }),
     getters: {
         getVariables(state) {
@@ -56,14 +61,11 @@ export const useProductStore = defineStore('product', {
     actions: {
         async saveProduct(payload: KEYOFSTRING) {
             try {
-                const tp = window.localStorage.getItem('tp')
-                axios.defaults.headers.common['Authorization'] = `Bearer ${tp}`;
-
                 let response = {} as any
 
-                if(payload.id) response = await axios.patch(links.product, payload)
+                if(payload.id) response = await axios().patch(links.product, payload)
 
-                response = await axios.post(links.product, payload)
+                response = await axios().post(links.product, payload)
 
                 const product = response.data.data
                 product.id = product._id
@@ -77,10 +79,8 @@ export const useProductStore = defineStore('product', {
         },
 
         async getProduct(link: string) {
-            const tp = window.localStorage.getItem('tp')
-            axios.defaults.headers.common['Authorization'] = `Bearer ${tp}`;
 
-            const response: any = await axios.get(link)
+            const response: any = await axios().get(link)
             const data = await response.data.data
             const id = data._id
             delete data.deleted_at
@@ -91,10 +91,7 @@ export const useProductStore = defineStore('product', {
         },
 
         async getVaribales() {
-            const tp = window.localStorage.getItem('tp')
-            axios.defaults.headers.common['Authorization'] = `Bearer ${tp}`;
-
-            const response:any = await axios.get(links.variables, {
+            const response:any = await axios().get(links.variables, {
                 params: {
                     show_all: true
                 }
@@ -103,10 +100,7 @@ export const useProductStore = defineStore('product', {
         },
 
         async getVariableOptionByVariableId(variable: string) {
-            const tp = window.localStorage.getItem('tp')
-            axios.defaults.headers.common['Authorization'] = `Bearer ${tp}`;
-
-            const response:any = await axios.get(links.variableOptions, {
+            const response:any = await axios().get(links.variableOptions, {
                 params: {
                     show_all: true,
                     variable
@@ -114,6 +108,61 @@ export const useProductStore = defineStore('product', {
             })
 
             return response.data.data.map((x: KEYOFSTRING) => {
+                return {
+                    value: x._id,
+                    title: capitalizeWords(<string> x.name)
+                }
+            })
+        },
+
+        async getAllAttributes() {
+            const payload = {
+                params: {
+                    show_all: true
+                }
+            }
+
+            const attributes = await axios().get(links.attributes, payload)
+            const categories = await axios().get(links.categories, payload)
+            const brands = await axios().get(links.brands, payload)
+            const tags = await axios().get(links.tags, payload)
+
+            this.attributes = attributes.data.data.map((x: KEYOFSTRING) => {
+                return {
+                    value: x._id,
+                    title: capitalizeWords(<string> x.name)
+                }
+            })
+            this.categories = categories.data.data.map((x: KEYOFSTRING) => {
+                return {
+                    value: x._id,
+                    title: capitalizeWords(<string> x.name)
+                }
+            })
+            this.brands = brands.data.data.map((x: KEYOFSTRING) => {
+                return {
+                    value: x._id,
+                    title: capitalizeWords(<string> x.name)
+                }
+            })
+            this.tags = tags.data.data.map((x: KEYOFSTRING) => {
+                return {
+                    value: x._id,
+                    title: capitalizeWords(<string> x.name)
+                }
+            })
+        },
+
+        async getAllSubCategories({ category }) {
+            const payload = {
+                params: {
+                    category,
+                    show_all: true
+                }
+            }
+
+            const subcategories = await axios().get(links.subcategories, payload)
+            this.subCategories = subcategories.data.data.map((x: KEYOFSTRING) => {
                 return {
                     value: x._id,
                     title: capitalizeWords(<string> x.name)

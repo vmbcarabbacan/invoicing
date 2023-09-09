@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import axios from 'axios'
+import axios from "@/plugins/axios"
 import { capitalizeWords } from '@/store/composables/common'
 import { MISC, value, KEYOFSTRING } from "@/types/"
 
@@ -24,10 +24,7 @@ export const useMiscStore = defineStore('misc', {
     actions: {
         async getRecords(link: string, payload: KEYOFSTRING) {
             try {
-                const tp = window.localStorage.getItem('tp')
-                axios.defaults.headers.common['Authorization'] = `Bearer ${tp}`;
-                
-                const response: any = await axios.get(link, {
+                const response: any = await axios().get(link, {
                     params: payload
                 })
                 this.miscs =  response.data.data
@@ -40,10 +37,8 @@ export const useMiscStore = defineStore('misc', {
 
         async getRecord(link: string, payload: KEYOFSTRING) {
             try {
-                const tp = window.localStorage.getItem('tp')
-                axios.defaults.headers.common['Authorization'] = `Bearer ${tp}`;
-
-                const response: any = await axios.get(link, payload)
+               
+                const response: any = await axios().get(link, payload)
                 const data = await response.data.data
                 const id = data._id
                 delete data.deleted_at
@@ -58,12 +53,9 @@ export const useMiscStore = defineStore('misc', {
 
         async saveRecord(link: string, payload: KEYOFSTRING, isAdd: Boolean = true) {
             try {
-                const tp = window.localStorage.getItem('tp')
-                axios.defaults.headers.common['Authorization'] = `Bearer ${tp}`;
+                if(isAdd) return await axios().post(link, payload)
 
-                if(isAdd) return await axios.post(link, payload)
-
-                return await axios.patch(link, payload)
+                return await axios().patch(link, payload)
                 
             } catch (error) {
                 return error

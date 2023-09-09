@@ -80,7 +80,7 @@ const containUndefined = (arr: Array<string>) => {
   }
 
   const addSlug = (value: string) => {
-    return value.replace(" ", "-")
+    return value.split(' ').join('-')
   }
 
   const randomString = () => {

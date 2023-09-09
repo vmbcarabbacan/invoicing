@@ -58,10 +58,19 @@ export function useEditComponent(payload: KEYOFSTRING = {}) {
         id: ''
     })
     const title = ref('')
+    const isEmpty = typeof payload == 'object' && Object.keys(payload).length == 0
+    let component_url = route.name
+    let component_id = route.params.id.toString()
+    if(!isEmpty && payload.url !== undefined) {
+        component_url = <string> payload.url
+    }
+    if(!isEmpty && payload.id !== undefined) {
+        component_id = <string> payload.id
+    }
     watchEffect(async() => {
         title.value =  setTitle(<string> route.name)
-        component.id = route.params.id.toString()
-        component.url = setUrl(<string> route.name).replace('ID', component.id)
+        component.id = component_id
+        component.url = setUrl(<string> component_url).replace('ID', component.id)
         app.setPageTitle(title.value)
 
         if(component.url && component.id && route) {

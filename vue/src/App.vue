@@ -27,7 +27,7 @@
   onMounted(async() => {
     if(auth.isLoggedIn) {
       const response = <Response> await auth.refresh()
-      if (response.status == 403 || response?.code == 'ERR_NETWORK') router.push({name : 'Login'})
+      if (response.status > 299 || response?.code == 'ERR_NETWORK') router.push({name : 'Login'})
     }
   })
 </script>

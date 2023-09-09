@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import { signin } from "@/types"
-import axios from 'axios'
+import axios from "@/plugins/axios"
 import links from "@/utils/links"
 
 
@@ -15,7 +15,7 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         async login(form: signin) {
             try {
-                const response = await axios.post(links.signin, form)
+                const response = await axios().post(links.signin, form)
                 window.localStorage.setItem('tp', response.data.token)
                 this.token = response.data.token
                 return response
@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', {
 
         async refresh() {
             try {
-                const response = await axios.get(links.refresh)
+                const response = await axios().get(links.refresh)
                 window.localStorage.setItem('tp', response.data.token)
                 this.token = response.data.token
                 return response
@@ -38,7 +38,7 @@ export const useAuthStore = defineStore('auth', {
 
         async logout() {
             try {
-                const response = await axios.get(links.logout)
+                const response = await axios().get(links.logout)
                 this.token = ''
                 window.localStorage.removeItem('tp')
                 return response

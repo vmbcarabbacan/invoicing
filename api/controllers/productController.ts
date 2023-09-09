@@ -99,7 +99,6 @@ export const createProduct = async(req: Request, res: Response) => {
                         quantity: req.body.variable_options[j].quantity ?? 0
                     })
                     const variable_sku_exist = await checkSkuExist(skuData)
-                    console.log(variable_sku_exist)
                     if(!variable_sku_exist) {
                         const variable_sku = await createSku(skuData)
                         for(const k in req.body.variable_options[j].skus) {

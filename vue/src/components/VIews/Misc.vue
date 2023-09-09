@@ -10,7 +10,7 @@
                         variant="text"
                         @click="goBack(route.meta?.to?.toString())"
                     >
-                        Back
+                        Back {{ backTitle }}
                     </v-btn>
                 </div>
                 <v-spacer />
@@ -54,7 +54,7 @@
                                 variant="text"
                                 icon="mdi-eye"
                                 color="green-lighten-2"
-                                @click="toView(item.id)"
+                                @click="toView(item)"
                             ></v-btn>
                         </td>
                     </tr>
@@ -83,15 +83,16 @@
 </template>
 
 <script lang="ts" setup>
-    import { ref, watch, inject, onMounted } from 'vue'
+    import { ref, watch, inject, onMounted, watchEffect } from 'vue'
     import { useComponent } from '@/store/composables/component'
     import { GenericHeaders, per_pages } from '@/utils/tables'
     import { storeToRefs } from 'pinia'
     import { useMiscStore } from '@/store/misc'
     import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router'
+    import { KEYOFSTRING } from '@/types'
 
     const mobile = inject('mobile')
-    const misc = useMiscStore()
+    const mis = useMiscStore()
     const router = useRouter()
     const route = useRoute()
 
@@ -99,7 +100,9 @@
    
    const per_page = ref(10)
 
-   const { miscDatas, miscs } = storeToRefs(misc)
+   let backTitle = window.localStorage.getItem('title')
+
+   const { miscDatas, miscs, misc } = storeToRefs(mis)
 
    function changePage() {
     const query = Object.assign({}, route.query)
@@ -118,8 +121,11 @@
     router.push({ name, params: { id } })
    }
 
-   function toView(id: string) {
+   function toView(item: KEYOFSTRING) {
     const name = `Sub${route.name?.toString()}`
+    const id = item.id
+    window.localStorage.setItem('title', item.name)
+    backTitle = item.name
     router.push({ name, params: { id } })
    }
 
@@ -133,6 +139,8 @@
    }
 
    function goBack(name: string) {
+    window.localStorage.setItem('title', '')
+    backTitle = ''
     router.push({ name })
    }
 
@@ -149,6 +157,7 @@
         router.replace({ query })
     }
    })
+
 
 </script>
 
