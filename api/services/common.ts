@@ -105,7 +105,7 @@ const containUndefined = (arr: Array<string>) => {
     
     let result = Model.find(query)
     if(show_all) {
-      const all = await result.exec()
+      const all = await result.lean()
       return res.status(200).json({ data: all })
     }
 
@@ -113,7 +113,7 @@ const containUndefined = (arr: Array<string>) => {
 
     result = await result.skip(indexStart)
     .limit(per_page)
-    .exec()
+    .lean({ virtuals: true })
     const count = await Model.find(query).countDocuments()
 
     // if (!result?.length) return res.status(200).json({ message: `No Item Found` })

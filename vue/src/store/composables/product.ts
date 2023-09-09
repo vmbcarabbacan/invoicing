@@ -1,13 +1,39 @@
 import { useRoute } from "vue-router"
 import { storeToRefs } from "pinia"
 import { useProductStore } from '@/store/product'
-import { reactive, watchEffect } from "vue"
+import { useAppStore } from '@/store/app'
+import { reactive, watchEffect, ref } from "vue"
 import { KEYOFSTRING } from "@/types/"
 import links from "@/utils/links"
+import { setTitle, setUrl } from './common'
 
 export function useProducts() {
     const route = useRoute()
+    const app = useAppStore()
+    const prod = useProductStore()
+    const title = ref('')
+    const component = reactive({
+        page: 1,
+        qn: '',
+        per_page: 10
+    })
 
+    watchEffect(async() => {
+        setTitle(<string> route.name)
+        const url = setUrl(<string> route.name)
+        component.page = parseInt(<string> route.query.page) || 1
+        component.qn = <string> route.query.qn || ''
+        component.per_page = parseInt(<string> route.query.per_page) || 10
+        app.setPageTitle(title.value)
+
+        let payload = {} as KEYOFSTRING
+        Object.entries(component).forEach(([key, value]) => {
+            if(value) payload[key] = value
+        })
+
+        if(url && route) await prod.getProducts(url, payload)
+        
+    })
 
 }
 
@@ -18,15 +44,17 @@ export async function useSaveProduct(id: string) {
         loading: false
     })
 
-    form.loading = true
+    if(product.value.name) {
+        form.loading = true
 
-    product.value.id = id
-    const response = await prod.saveProduct(product.value)
-    form.loading = false
+        product.value.id = id
+        const response = await prod.saveProduct(product.value)
+        form.loading = false
 
-    Object.entries(response).forEach(([key, value]) => {
-        form[key] = value
-    })
+        Object.entries(response).forEach(([key, value]) => {
+            form[key] = value
+        })
+    }
 
     return { ...form }
 }

@@ -1,4 +1,5 @@
 import { Schema, Types, model, Document, Query } from 'mongoose'
+import mongooseLeanVirtuals from 'mongoose-lean-virtuals'
 import { types, productStatuses } from '../utils/constant'
 import { DefaultTypes } from '../types/'
 import { Category } from './categories'
@@ -108,15 +109,35 @@ export const productSchema = new Schema(
     },
     {
         timestamps: true,
-        versionKey: false 
+        versionKey: false,
     }
 )
+
+productSchema.virtual('status_text').get(function() {
+    const status =  productStatuses.find(x => x.value === this.status)
+    if(status) return status.label
+
+    return 'Draft'
+  });
+
+productSchema.virtual('descrption_text').get(function() {
+    if(this.description.length > 25) return this.description.substring(0, 25) + '...'
+
+    return this.description
+})
+
+productSchema.virtual('variable').get(function() {
+    return this.is_variable ? 'Yes' : 'No'
+})
+
 
 productSchema.query = {
     async byName(name: string) {
        return await this.where({ name })
      }
 }
+
+productSchema.plugin(mongooseLeanVirtuals)
 
 export const Product = model<IProduct, ProductQueryHelpers>('Product', productSchema)
 

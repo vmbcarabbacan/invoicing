@@ -43,6 +43,7 @@ export function setTitle(value: string) {
 
 export function setUrl(value: string) {
     switch(value) {
+        case 'AllProducts': return links.product
         case 'Categories': return links.categories
         case 'Variables': return links.variables
         case 'SubCategories': return links.subcategories

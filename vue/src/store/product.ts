@@ -23,6 +23,7 @@ export const useProductStore = defineStore('product', {
             options: [],
             variable_options: []
         },
+        products: [],
         variables: [],
         options: [],
         attributes: [],
@@ -59,6 +60,19 @@ export const useProductStore = defineStore('product', {
         }
     },
     actions: {
+        async getProducts(link: string, payload: KEYOFSTRING) {
+            try {
+                const response = await axios().get(link, {
+                    params: payload
+                })
+                this.products = response.data.data
+
+                return response
+            } catch (error) {
+                return error
+            }
+        },
+
         async saveProduct(payload: KEYOFSTRING) {
             try {
                 let response = {} as any

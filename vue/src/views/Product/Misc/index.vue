@@ -2,7 +2,17 @@
     <v-container>
         <v-row class="d-flex justify-center">
             <v-col md="6" sm="12">
-                <misc />
+                <suspense>
+
+                    <template #default>
+                        <misc />
+                    </template>
+
+                    <template #fallback>
+                    <p>Loading...</p>
+                    </template>
+
+                </suspense>
             </v-col>
         </v-row>
     </v-container>
@@ -10,7 +20,6 @@
 
 <script lang="ts" setup>
     import { defineAsyncComponent } from 'vue'
-    // import misc from '@/components/Views/Misc.vue'
     import LoadingComponent  from '@/components/Loading.vue'
 
     const misc = defineAsyncComponent({

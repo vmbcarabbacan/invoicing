@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { ref, watch, inject, onMounted, watchEffect } from 'vue'
+    import { ref, watch, inject, onMounted } from 'vue'
     import { useComponent } from '@/store/composables/component'
     import { GenericHeaders, per_pages } from '@/utils/tables'
     import { storeToRefs } from 'pinia'
