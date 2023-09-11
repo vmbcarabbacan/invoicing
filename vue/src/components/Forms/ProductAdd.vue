@@ -11,12 +11,18 @@
       <v-window v-model="step">
         
         <ProductTitle />
-  
-        <ProductInventory />
 
-        <ProductVariables />
+        <v-window-item :value="2">
+          <ProductInventory />
+        </v-window-item>
 
-        <ProductAttributes />
+        <v-window-item :value="3">
+          <ProductVariables />
+        </v-window-item>
+
+        <v-window-item :value="4">
+          <ProductAttributes />
+        </v-window-item>
   
       </v-window>
   
@@ -53,7 +59,7 @@ import { useProductStore } from '@/store/product'
 import { storeToRefs } from 'pinia'
 
 const prod = useProductStore()
-const { product, options } = storeToRefs(prod)
+const { product, options, generateVariables } = storeToRefs(prod)
 const route = useRoute()
 const router = useRouter()
 const step = ref<number>(1)
@@ -100,8 +106,8 @@ const ProductAttributes = defineAsyncComponent({
 async function saveProduct() {
   step.value++
   if(step.value == 3 && !product.value.is_variable) step.value++
-  if(step.value == 3 && product.value.is_variable) product.value.variable_options = options
-
+  if(step.value == 3 && product.value.is_variable) product.value.variable_options = generateVariables
+console.log({step: step.value, product: product.value, generateVariables: generateVariables.value})
   if(step.value === 5) product.value.status = 1
   const { id } = await useSaveProduct(<string> route.query.pid)
   if(step.value === 5 ) return router.push({ name: 'AllProducts' })

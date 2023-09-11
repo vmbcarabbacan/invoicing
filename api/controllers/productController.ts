@@ -113,7 +113,6 @@ export const createProduct = async(req: Request, res: Response) => {
                     }
                 }
             }
-
             const prod = await getProductQuery(product._id, product.is_variable, true)
             return res.status(200).json({ data: prod })
         }

@@ -32,6 +32,15 @@ const menus = [
                 show: true
             },
             {
+                path: 'product-edit/:id',
+                name: 'EditAllProducts',
+                label: 'Edit Product',
+                component: () => import('@/views/Product/Edit.vue'),
+                props: true,
+                icon: '',
+                show: false
+            },
+            {
                 path: 'variables',
                 name: 'Variables',
                 label: 'Variables',
@@ -47,6 +56,7 @@ const menus = [
                 name: 'SubVariables',
                 label: '',
                 component: () => import('@/views/Product/Misc/index.vue'),
+                props: true,
                 icon: '',
                 show: false,
                 meta: {
@@ -71,6 +81,7 @@ const menus = [
                 name: 'SubCategories',
                 label: '',
                 component: () => import('@/views/Product/Misc/index.vue'),
+                props: true,
                 icon: '',
                 show: false,
                 meta: {

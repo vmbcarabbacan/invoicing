@@ -19,7 +19,7 @@ export function useProducts() {
     })
 
     watchEffect(async() => {
-        setTitle(<string> route.name)
+        title.value = setTitle(<string> route.name)
         const url = setUrl(<string> route.name)
         component.page = parseInt(<string> route.query.page) || 1
         component.qn = <string> route.query.qn || ''
@@ -60,19 +60,28 @@ export async function useSaveProduct(id: string) {
 }
 
 export function useProduct() {
+    const app = useAppStore()
     const route = useRoute()
     const prod = useProductStore()
     const { product } = storeToRefs(prod)
 
     let id = ''
     
-    if(route.query.pid) id = route.query.pid.toString()
-    if(route.params.id) id = route.params.id.toString()
+    if(route) {
+        if(route.query.pid) id = route.query.pid.toString()
+        if(route.params.id) id = route.params.id.toString()
+    }
 
     prod.$reset()
 
     
     watchEffect(async() => {
+        if(route) {
+            const title = setTitle(<string> route.name)
+            app.setPageTitle(title)
+        }
+        
+
         if(id) {
             const link = links.productById.replace('ID', id)
             await prod.getProduct(link)

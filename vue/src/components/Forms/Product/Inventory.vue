@@ -1,5 +1,4 @@
 <template>
-    <v-window-item :value="2">
           <v-card-text>
             <v-switch
                 v-model="product.track_quantity"
@@ -83,7 +82,6 @@
                 </v-btn>
             </template>
           </v-card-text>
-    </v-window-item>
 </template>
 
 <script setup>
@@ -99,7 +97,9 @@ const { product, getVariables } = storeToRefs(prod)
 callVariable()
 
 async function callVariable () {
-    await useSaveProduct(route.query.pid)
+    let id = route.query.pid
+    if(!id) id = product.value.id
+    await useSaveProduct(id)
     if(product.value.is_variable) {
         prod.getVaribales()
         if(product.value.options && product.value.options.length === 0) {
