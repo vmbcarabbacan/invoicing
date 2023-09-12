@@ -2,6 +2,7 @@ import { useRoute } from "vue-router"
 import { storeToRefs } from "pinia"
 import { useProductStore } from '@/store/product'
 import { useAppStore } from '@/store/app'
+import { useMasterStore } from "@/store/master"
 import { reactive, watchEffect, ref } from "vue"
 import { KEYOFSTRING } from "@/types/"
 import links from "@/utils/links"
@@ -63,7 +64,9 @@ export function useProduct() {
     const app = useAppStore()
     const route = useRoute()
     const prod = useProductStore()
+    const master = useMasterStore()
     const { product } = storeToRefs(prod)
+    
 
     let id = ''
     
@@ -86,6 +89,7 @@ export function useProduct() {
             const link = links.productById.replace('ID', id)
             await prod.getProduct(link)
             await prod.getAllAttributes()
+            await master.getStatuses()
             if(product.value.category) await prod.getAllSubCategories({ category: product.value.category })
         }
     })

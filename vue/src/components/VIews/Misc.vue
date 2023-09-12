@@ -73,7 +73,7 @@
             <span>Total {{ miscs.total }}</span>
             <v-spacer />
             <v-pagination
-                v-model="miscs.from"
+                v-model="page"
                 :length="miscs.size"
                 :total-visible="mobile ? 3 : 7"
                 @click="changePage"
@@ -99,15 +99,26 @@
    const { title } = useComponent()
    
    const per_page = ref(10)
+   const page = ref(1)
 
    let backTitle = window.localStorage.getItem('title')
 
    const { miscDatas, miscs, misc } = storeToRefs(mis)
 
+   
+    onMounted(() => {
+        if(route.query.page) {
+            page.value = parseInt(route.query.page.toString())
+        }
+        if(route.query.per_page) {
+            per_page.value = parseInt(route.query.per_page.toString())
+        }
+    })
+
    function changePage() {
     const query = Object.assign({}, route.query)
-    query.page = miscs.value.from
-    if(route.query.per_page) query.per_page = route.query.per_page
+    query.page = page.value
+    if(route.query.per_page) query.per_page = parseInt(route.query.per_page.toString())
     if(route.query.qn) query.qn = route.query.qn
     router.replace({ query })
    }

@@ -34,21 +34,61 @@
                 </template>
             </vc-table>
         </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+            <v-select
+                v-model="per_page"
+                :items="per_pages"
+                label=""
+                class="per_page"
+            ></v-select>
+            <v-spacer />
+            <span>Total {{ products.total }}</span>
+            <v-spacer />
+            <v-pagination
+                v-model="page"
+                :length="products.size"
+                :total-visible="mobile ? 3 : 7"
+                @click="changePage"
+                ></v-pagination>
+        </v-card-actions>
     </v-card>
 </template>
 <script lang="ts" setup>
-import { ProductHeaders } from '@/utils/tables' 
+import { inject, ref, onMounted } from 'vue'
+import { ProductHeaders, per_pages } from '@/utils/tables' 
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '@/store/product'
-import { useRoute } from 'vue-router'
-import router from '@/router';
+import { useRoute, useRouter } from 'vue-router'
 
 const prod = useProductStore()
 const route = useRoute()
+const router = useRouter()
 const { products } = storeToRefs(prod)
+const mobile = inject('mobile')
+const per_page = ref(10)
+const page = ref(1)
 
 function toEdit(id: string) {
     const name = `Edit${route.name?.toString()}`
     router.push({name, params: { id }})
 }
+
+onMounted(() => {
+    if(route.query.page) {
+        page.value = parseInt(route.query.page.toString())
+    }
+    if(route.query.per_page) {
+        per_page.value = parseInt(route.query.per_page.toString())
+    }
+})
+
+function changePage() {
+    const query = Object.assign({}, route.query)
+    query.page = page.value
+    
+    if(route.query.per_page) query.per_page = parseInt(route.query.per_page.toString())
+    if(route.query.qn) query.qn = route.query.qn
+    router.replace({ query })
+   }
 </script>

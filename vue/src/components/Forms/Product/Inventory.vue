@@ -46,7 +46,8 @@
                                     v-model="variable.variable_id"
                                     @update:modelValue="handleChange(variable)"
                                     label="Select Variable"
-                                    />
+                                    :disabled="route.name == 'EditAllProducts'"
+                                />
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-select
@@ -72,6 +73,7 @@
                     </v-container>
                 </div>
                 <v-btn
+                    v-if="route.name == 'NewProduct'"
                     color="primary"
                     variant="flat"
                     block
