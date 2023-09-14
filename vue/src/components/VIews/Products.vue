@@ -4,7 +4,7 @@
             <vc-table height="400" hover>
                 <template #header>
                     <tr>
-                        <th class="text-left" v-for="header in ProductHeaders" :key="header.label" :width="header.width">{{ header.label }}</th>
+                        <th class="text-left" v-for="header in headers" :key="header.label" :width="header.width">{{ header.label }}</th>
                         <th>Action</th>
                     </tr>
                     
@@ -12,7 +12,7 @@
 
                 <template #body>
                     <tr v-for="item in products.data" :key="item.id">
-                        <td class="text-left" v-for="header in ProductHeaders" :key="header.label">
+                        <td class="text-left" v-for="header in headers" :key="header.label">
                         <span v-if="header.value === 'status_text'"
                         :class="{'text-red': item.status == 0, 'text-green': item.status == 1, 'text-blue': item.status == 2}">
                             {{ item[header.value] }}
@@ -55,7 +55,7 @@
     </v-card>
 </template>
 <script lang="ts" setup>
-import { inject, ref, onMounted } from 'vue'
+import { inject, ref, onMounted, computed } from 'vue'
 import { ProductHeaders, per_pages } from '@/utils/tables' 
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '@/store/product'
@@ -81,6 +81,12 @@ onMounted(() => {
     if(route.query.per_page) {
         per_page.value = parseInt(route.query.per_page.toString())
     }
+})
+
+const headers = computed(() => {
+    if(route.name === 'AllServices') return ProductHeaders.filter(x => x.value !== 'variable')
+
+    return ProductHeaders
 })
 
 function changePage() {

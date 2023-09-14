@@ -17,6 +17,7 @@ export type Bearer = {
 export type Queries = {
     name: Fitlers,
     category?: string
+    type?: number
     variable?: string
     show_all?: boolean
 }

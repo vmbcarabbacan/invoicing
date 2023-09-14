@@ -8,7 +8,7 @@ import { KEYOFSTRING } from "@/types/"
 import links from "@/utils/links"
 import { setTitle, setUrl } from './common'
 
-export function useProducts() {
+export function useProducts(type = 1) {
     const route = useRoute()
     const app = useAppStore()
     const prod = useProductStore()
@@ -16,7 +16,8 @@ export function useProducts() {
     const component = reactive({
         page: 1,
         qn: '',
-        per_page: 10
+        per_page: 10,
+        type
     })
 
     watchEffect(async() => {
@@ -67,6 +68,7 @@ export function useProduct() {
     const master = useMasterStore()
     const { product } = storeToRefs(prod)
     
+    prod.$reset()
 
     let id = ''
     
@@ -74,8 +76,6 @@ export function useProduct() {
         if(route.query.pid) id = route.query.pid.toString()
         if(route.params.id) id = route.params.id.toString()
     }
-
-    prod.$reset()
 
     
     watchEffect(async() => {

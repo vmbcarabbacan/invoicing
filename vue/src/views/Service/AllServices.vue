@@ -4,15 +4,15 @@
             <v-col md="6" sm="12">
                 <suspense>
 
-                <template #default>
-                    <product />
-                </template>
+                    <template #default>
+                        <services />
+                    </template>
 
-                <template #fallback>
-                <p>Loading...</p>
-                </template>
+                    <template #fallback>
+                    <p>Loading...</p>
+                    </template>
 
-                </suspense>
+                    </suspense>
             </v-col>
         </v-row>
     </v-container>
@@ -23,13 +23,14 @@ import { useProducts } from '@/store/composables/product'
 import { defineAsyncComponent } from 'vue'
 import LoadingComponent  from '@/components/Loading.vue'
 
-useProducts(1)
+useProducts(2)
 
-const product = defineAsyncComponent({
+const services = defineAsyncComponent({
     loader: () => import('@/components/Views/Products.vue'),
     loadingComponent: LoadingComponent,
     delay: 1000,
     timeout: 3000
 
 })
+
 </script>

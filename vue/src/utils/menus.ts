@@ -270,8 +270,35 @@ const menus = [
         path: 'service',
         name: 'Service',
         label: 'Service',
-        component: () => import('@/views/Home.vue'),
+        component: () => import('@/views/Service/index.vue'),
         icon: 'mdi-wrench-cog',
+        redirect: 'service/all-services',
+        children: [
+            {
+                path: 'all-services',
+                name: 'AllServices',
+                label: 'All Services',
+                component: () => import('@/views/Service/AllServices.vue'),
+                icon: '',
+                show: true
+            },
+            {
+                path: 'service-new',
+                name: 'NewService',
+                label: 'Add New',
+                component: () => import('@/views/Service/Add.vue'),
+                icon: '',
+                show: true
+            },
+            {
+                path: 'service-edit/:id',
+                name: 'EditAllServices',
+                label: '',
+                component: () => import('@/views/Service/Edit.vue'),
+                icon: '',
+                show: false
+            },
+        ],
         show: true
     },
     { 

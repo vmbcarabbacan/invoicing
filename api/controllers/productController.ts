@@ -12,6 +12,7 @@ export const getProducts = async(req: Request, res: Response) => {
     let query = <Queries>{}
 
     if(req.query.qn) query.name = <Fitlers>{ $regex: req.query.qn, $options: 'i' }
+    if(req.query.type) query.type = req.query.type
 
     paginatedData(res, Product, query, per_page, indexStart)
 }
@@ -120,8 +121,9 @@ export const createProduct = async(req: Request, res: Response) => {
         const product = await Product.create(productObj)
         const skuData = <DefData> createSkuData({
             name: product.name,
-            product_id: product._id
+            product_id: product._id,
         })
+        if(req.body.price) skuData['price'] = req.body.price
         await createSku(skuData)
 
         const prod = await getProductQuery(product._id, product.is_variable, true)

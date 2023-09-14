@@ -13,6 +13,10 @@ export function setTitle(value: string) {
     switch(value) {
         case 'AllProducts': return 'All Products'
         case 'NewProduct': return 'New Product'
+        case 'EditAllProducts': return 'Edit Product'
+        case 'AllServices': return 'All Services'
+        case 'NewService': return 'New Service'
+        case 'EditAllServices': return 'Edit Service'
         case 'Categories': return 'Categories'
         case 'Variables': return 'Variables'
         case 'SubVariables': return 'Variable Options'
@@ -43,7 +47,8 @@ export function setTitle(value: string) {
 
 export function setUrl(value: string) {
     switch(value) {
-        case 'AllProducts': return links.product
+        case 'AllProducts':
+        case 'AllServices': return links.product
         case 'Categories': return links.categories
         case 'Variables': return links.variables
         case 'SubCategories': return links.subcategories

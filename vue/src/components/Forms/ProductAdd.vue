@@ -107,7 +107,6 @@ async function saveProduct() {
   step.value++
   if(step.value == 3 && !product.value.is_variable) step.value++
   if(step.value == 3 && product.value.is_variable) product.value.variable_options = generateVariables
-console.log({step: step.value, product: product.value, generateVariables: generateVariables.value})
   if(step.value === 5) product.value.status = 1
   const { id } = await useSaveProduct(<string> route.query.pid)
   if(step.value === 5 ) return router.push({ name: 'AllProducts' })
