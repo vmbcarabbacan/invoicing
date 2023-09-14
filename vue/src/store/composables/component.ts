@@ -60,7 +60,7 @@ export function useEditComponent(payload: KEYOFSTRING = {}) {
     const title = ref('')
     const isEmpty = typeof payload == 'object' && Object.keys(payload).length == 0
     let component_url = route.name
-    let component_id = route.params.id.toString()
+    let component_id = route.params.id?.toString()
     if(!isEmpty && payload.url !== undefined) {
         component_url = <string> payload.url
     }

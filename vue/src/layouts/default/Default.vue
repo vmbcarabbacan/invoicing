@@ -4,6 +4,7 @@
     <v-app-bar-title>{{  page_title }}</v-app-bar-title>
     <v-spacer></v-spacer>
     <v-text-field
+      v-if="!notShow.some(x => route.name?.toString().includes(x))"
       label="Search"
       prepend-inner-icon="mdi-magnify"
       class="mr-4"
@@ -28,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, onMounted } from 'vue'
+import { inject, onMounted, ref } from 'vue'
 import { useAppStore } from '@/store/app'
 import { storeToRefs } from 'pinia'
 import { useRouter, useRoute } from 'vue-router'
@@ -39,6 +40,7 @@ const drawer = inject('drawer')
 const app = useAppStore()
 const router = useRouter()
 const route = useRoute()
+const notShow = ref(['Edit', 'New', 'Add', 'Dashboard'])
 
 const { page_title, search } = storeToRefs(app)
 
